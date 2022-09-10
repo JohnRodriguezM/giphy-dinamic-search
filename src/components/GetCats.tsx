@@ -3,12 +3,12 @@ import React, { useState, useEffect } from "react";
 import { getData } from "../ts/functions/gerData";
 
 const URLCATS = "https://catfact.ninja/fact";
-const URLBASEGIF = "https://api.giphy.com/v1/gifs/search?"
-const APIKEY = "X91VtYFffueL6G58jFQW3XqVqlrvvxeL"
+const URLBASEGIF = "https://api.giphy.com/v1/gifs/search?";
+const APIKEY = "X91VtYFffueL6G58jFQW3XqVqlrvvxeL";
 
 export const GetCats = () => {
   const [manageBtn, setManageBtn] = useState<number>();
-  const [data, setData] = useState<string>("");
+  const [data, setData] = useState<any>("");
 
   const [dataToSearch, setDataToSearch] = useState<string>("");
 
@@ -17,31 +17,36 @@ export const GetCats = () => {
   const [giphySelect, setGiphySelect] = useState<any>(null);
 
   //function para sacar las tres primeras letras de la frase
-  const extractWords = (phrase: string) => setDataToSearch(phrase.split(" ").slice(0, 3).join(" "));
-
+  const extractWords = (phrase: string) =>
+    setDataToSearch(phrase.split(" ").slice(0, 3).join(" "));
 
   const urlGiphy = `${URLBASEGIF}api_key=${APIKEY}&q=${dataToSearch}&limit=2&offset=0&rating=g&lang=en`;
   useEffect(() => {
     //*traer el gif de gphy
-    getData(
-      urlGiphy,
-      setGiphySelect,
-    )
+    getData(urlGiphy).then((datos) => {
+      const { data } = datos;
+      setGiphySelect(data);
+    });
   }, [urlGiphy]);
 
   useEffect(() => {
-    const getData = async (url: string) => {
+    getData(URLCATS).then((data) => {
+      const { fact } = data;
+      setData(fact);
+      extractWords(data.fact);
+    });
+    /*const getData = async (url: string) => {
       try {
         const response = await fetch(url);
-        const { fact } = await response.json();
-        console.log("SOY LA FRASEEEEEEEEEEEEEEE", fact);
-        setData(fact);
-        extractWords(fact);
+        const data = await response.json();
+        console.log("SOY LA FRASEEEEEEEEEEEEEEE", data);
+        setData(data);
+        extractWords(data.fact);
       } catch (err) {
         console.log(err);
       }
     };
-    getData(URLCATS);
+    getData(URLCATS);*/
   }, [manageBtn]);
 
   return (
@@ -49,7 +54,6 @@ export const GetCats = () => {
       <button
         onClick={() => {
           setManageBtn(Math.random());
-          /*extractWords(data)*/
         }}
       >
         pide una frase diferente
@@ -62,7 +66,7 @@ export const GetCats = () => {
 
       <div>
         {giphySelect ? (
-          giphySelect?.data?.map((el: any) => {
+          giphySelect?.map((el: any) => {
             return (
               <>
                 {/*<img src={el.images.original.url} alt="" width="200" height="200" />*/}
