@@ -1,0 +1,14 @@
+.mainSection {
+  margin: 25px auto;
+  display: grid;
+  height: 80vh;
+}
+
+@media (min-width: 600px) {
+  .mainSection {
+    grid-template-columns: 48% 48%;
+    gap: 25px;
+    place-items: center;
+  height: 100vh;
+  }
+}
